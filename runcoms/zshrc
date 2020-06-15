@@ -4,10 +4,131 @@
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
+###########################################################
+# Pre configuration
+# https://github.com/zplug/zplug
 
+# Define the environment variable ZPLUG_HOME
+# moved to zshenv
+# export ZPLUG_HOME=/usr/local/opt/zplug
+
+# Loads zplug
+source $ZPLUG_HOME/init.zsh
+
+# Clear packages
+zplug clear
+
+###########################################################
+# Packages
+
+zplug "zplug/zplug", hook-build: "zplug --self-manage"
+
+zplug "lukechilds/zsh-nvm"
+zplug "tysonwolker/iterm-tab-colors"
+zplug "jimhester/per-directory-history"
+
+
+# https://cercal.io/en/iterm2-plus-zplug-means-productivity/
+zplug "zsh-users/zsh-syntax-highlighting"
+zplug "zsh-users/zsh-autosuggestions"
+zplug "zsh-users/zsh-completions"
+zplug "paulmelnikow/zsh-startup-timer"
+zplug "desyncr/auto-ls"
+# zplug "momo-lab/zsh-abbrev-alias"
+# zplug "rawkode/zsh-docker-run"
+# zplug "arzzen/calc.plugin.zsh"
+zplug "peterhurford/up.zsh"
+zplug "jimeh/zsh-peco-history"
+
+zplug "sorin-ionescu/prezto"
+
+
+###########################################################
+# Prezto modules
+
+zplug "modules/environment", from:prezto
+zplug "modules/terminal", from:prezto
+zplug "modules/editor", from:prezto
+zplug "modules/history", from:prezto
+zplug "modules/directory", from:prezto
+zplug "modules/spectrum", from:prezto
+zplug "modules/utility", from:prezto
+zplug "modules/completion", from:prezto
+zplug "modules/ssh", from:prezto
+zplug "modules/osx", from:prezto
+zplug "modules/git", from:prezto
+zplug "modules/homebrew", from:prezto
+zplug "modules/python", from:prezto
+zplug "modules/ruby", from:prezto
+zplug "modules/rails", from:prezto
+zplug "modules/node", from:prezto
+zplug "modules/prompt", from:prezto
+
+###########################################################
+# Install packages that have not been installed yet
+
+if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    else
+        echo
+    fi
+fi
+
+zplug load
+# zplug load --verbose
+
+###########################################################
 # Source Prezto.
+
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
+###########################################################
+# Post configuration
+
+
 # Customize to your needs...
+
+alias l='tree -L 1 -tla -I .DS_Store --dirsfirst'
+alias ll='tree -L 2 -tla -I .DS_Store --dirsfirst'
+
+# https://unix.stackexchange.com/questions/14885/how-to-reset-a-shell-environment/214974#214974?newreg=702b566740074bc48b2fd480752016fc
+alias reload="exec zsh -l | env -i zsh"
+
+alias pps="pipenv shell"
+
+alias history="history 1"
+
+# update last commit with current changes, keep commit message
+# https://stackoverflow.com/questions/10237071/how-to-amend-a-commit-without-changing-commit-message-reusing-the-previous-one
+alias upla="commit -C HEAD --amend -a"
+
+# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[[ -f /Users/shaedrich/.nvm/versions/node/v11.9.0/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh ]] && . /Users/shaedrich/.nvm/versions/node/v11.9.0/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh
+
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[[ -f /Users/shaedrich/.nvm/versions/node/v11.9.0/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh ]] && . /Users/shaedrich/.nvm/versions/node/v11.9.0/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh
+
+# tabtab source for slss package
+# uninstall by removing these lines or running `tabtab uninstall slss`
+[[ -f /Users/shaedrich/.nvm/versions/node/v11.9.0/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh ]] && . /Users/shaedrich/.nvm/versions/node/v11.9.0/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh
+
+
+# eval "$(rbenv init -)"
+if which rbenv > /dev/null; then
+  eval "$(rbenv init -)";
+fi
+
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+
+fpath=(/usr/local/share/zsh-completions $fpath)
